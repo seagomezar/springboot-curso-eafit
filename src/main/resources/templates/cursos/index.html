@@ -14,19 +14,17 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
-<div class="container">
-    <h1>Upload Image (Without Dependency Injection)</h1>
-    <form th:action="@{/image-not-di/save}" method="post" enctype="multipart/form-data">
-        <input type="file" name="profile_image"/>
-        <button type="submit">Submit</button>
-    </form>
-    <div th:if="${message}">
-        <p th:text="${message}"></p>
-    </div>
-    <div>
-        <img th:src="@{'/uploads/test.png'}" alt="Uploaded Image" height="200px"/>
-    </div>
-</div>
-<div th:replace="~{fragments/footer :: footer}"></div>
+
+<div class="container my-4">
+
+  <h1>Listado de Cursos</h1>
+
+  <ul th:each="curso : ${listacursos}">
+    <li th:text="${curso.nombre}"></li>
+    <li th:text="${curso.descripcion}"></li>
+  </ul>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
+

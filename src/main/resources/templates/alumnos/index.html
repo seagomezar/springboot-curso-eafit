@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+  <ul th:each="alumno : ${listaalumnos}">
+    <li th:text="${alumno.nombre}"></li>
+    <li th:text="${alumno.edad}"></li>
+  </ul>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
