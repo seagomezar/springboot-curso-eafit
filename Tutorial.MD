@@ -28,31 +28,31 @@ Este archivo define las dependencias necesarias para nuestro proyecto Spring Boo
 *   `spring-boot-starter-data-jpa`:  Para la persistencia de datos.  Usaremos JPA para guardar la información de nuestros usuarios en la base de datos. 💾
 *   `mysql-connector-j`:  El conector para nuestra base de datos MySQL. 🗄️
 
-### 2. `src/main/java/com/docencia/clase08/Clase08Application.java`:  Clase Principal de la Aplicación 🚦
+### 2. `src/main/java/com/docencia/clase10/clase10Application.java`:  Clase Principal de la Aplicación 🚦
 Este es el punto de entrada de nuestra aplicación Spring Boot.  Aquí no tenemos configuraciones específicas de seguridad, pero es importante notar la anotación `@SpringBootApplication`:
 
 ```java
-package com.docencia.clase08;
+package com.docencia.clase10;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Clase08Application {
+public class clase10Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Clase08Application.class, args);
+		SpringApplication.run(clase10Application.class, args);
 	}
 
 }
 ```
 *   `@SpringBootApplication`:  Anota nuestra clase principal, habilitando la auto-configuración de Spring Boot, el escaneo de componentes y más.  ¡Magia de Spring Boot! ✨
 
-### 3. `src/main/java/com/docencia/clase08/config/SecurityConfig.java`: Configuración de Seguridad 🛡️
+### 3. `src/main/java/com/docencia/clase10/config/SecurityConfig.java`: Configuración de Seguridad 🛡️
 Aquí configuramos todo lo relacionado con Spring Security.  ¡Este archivo es crucial! 🔑
 
 ```java
-package com.docencia.clase08.config;
+package com.docencia.clase10.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -141,11 +141,11 @@ public class SecurityConfig {
     *   `.csrf().disable()`:  Deshabilita CSRF por simplicidad en este ejemplo.  **¡Importante!** En producción, ¡debes habilitar CSRF y configurarlo correctamente! ⚠️
 *   `configureGlobal(AuthenticationManagerBuilder auth) throws Exception`:  Configura el `AuthenticationManagerBuilder` para usar nuestro `UserDetailsService` y `PasswordEncoder`.  ¡Aquí conectamos todo! 🔗
 
-### 4. `src/main/java/com/docencia/clase08/services/UserDetailsServiceImpl.java`: Servicio de Detalles de Usuario 👤
+### 4. `src/main/java/com/docencia/clase10/services/UserDetailsServiceImpl.java`: Servicio de Detalles de Usuario 👤
 Este servicio implementa `UserDetailsService` y se encarga de buscar usuarios en la base de datos por su nombre de usuario. 🕵️‍♀️
 
 ```java
-package com.docencia.clase08.services;
+package com.docencia.clase10.services;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -160,8 +160,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.docencia.clase08.models.Usuario;
-import com.docencia.clase08.repositories.UsuarioRepository;
+import com.docencia.clase10.models.Usuario;
+import com.docencia.clase10.repositories.UsuarioRepository;
 
 @Service
 @Transactional
@@ -195,15 +195,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     *   Si no encuentra el usuario, lanza `UsernameNotFoundException`. ❌
     *   Si lo encuentra, crea un `User` de Spring Security con el `username`, `password` y roles del `Usuario` encontrado.  ¡Usuario listo para ser autenticado! ✅
 
-### 5. `src/main/java/com/docencia/clase08/repositories/UsuarioRepository.java`: Repositorio de Usuarios 💾
+### 5. `src/main/java/com/docencia/clase10/repositories/UsuarioRepository.java`: Repositorio de Usuarios 💾
 Este repositorio extiende `JpaRepository` y nos permite interactuar con la tabla de usuarios en la base de datos. 🗄️
 
 ```java
-package com.docencia.clase08.repositories;
+package com.docencia.clase10.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.docencia.clase08.models.Usuario;
+import com.docencia.clase10.models.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Usuario findByUsername(String username);
@@ -212,11 +212,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 *   `public interface UsuarioRepository extends JpaRepository<Usuario, Long>`:  Define un repositorio JPA para la entidad `Usuario` con clave primaria de tipo `Long`.  ¡CRUD y más funcionalidades mágicas gracias a JPA! ✨
 *   `Usuario findByUsername(String username)`:  Define un método para buscar usuarios por nombre de usuario.  ¡JpaRepository crea la query automáticamente! 🤯
 
-### 6. `src/main/java/com/docencia/clase08/models/Usuario.java`: Modelo de Usuario 🧑‍🎓
+### 6. `src/main/java/com/docencia/clase10/models/Usuario.java`: Modelo de Usuario 🧑‍🎓
 Este modelo representa la entidad `Usuario` en nuestra base de datos. 🗂️
 
 ```java
-package com.docencia.clase08.models;
+package com.docencia.clase10.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -253,13 +253,13 @@ public class Usuario {
 *   `@Column(nullable = false) private String password`:  Define el campo `password` como no nulo. 密碼
 *   `@Column private String role`:  Define el campo `role` para roles de usuario (ej: `ROLE_USER`, `ROLE_ADMIN`). 🎭
 
-### 7. `src/main/java/com/docencia/clase08/controllers/LoginController.java` y `src/main/resources/templates/login.html`: Login 🚪
+### 7. `src/main/java/com/docencia/clase10/controllers/LoginController.java` y `src/main/resources/templates/login.html`: Login 🚪
 Estos archivos manejan la página de login.
 
 *   `LoginController.java`:
 
 ```java
-package com.docencia.clase08.controllers;
+package com.docencia.clase10.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -316,13 +316,13 @@ public class LoginController {
     *   `<div th:if="${param.error}">`:  Muestra un mensaje de error si el login falla (Spring Security añade el parámetro `error` a la URL en caso de fallo). ❌
     *   `<div th:if="${param.logout}">`:  Muestra un mensaje de éxito tras cerrar sesión (Spring Security añade `logout` al hacer logout). ✅
 
-### 8. `src/main/java/com/docencia/clase08/controllers/RegistroController.java`, `src/main/java/com/docencia/clase08/DTOs/RegistroForm.java` y `src/main/resources/templates/registro.html`: Registro ✍️
+### 8. `src/main/java/com/docencia/clase10/controllers/RegistroController.java`, `src/main/java/com/docencia/clase10/DTOs/RegistroForm.java` y `src/main/resources/templates/registro.html`: Registro ✍️
 Estos archivos gestionan el registro de nuevos usuarios.
 
 *   `RegistroController.java`:
 
 ```java
-package com.docencia.clase08.controllers;
+package com.docencia.clase10.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -333,9 +333,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.docencia.clase08.DTOs.RegistroForm;
-import com.docencia.clase08.models.Usuario;
-import com.docencia.clase08.repositories.UsuarioRepository;
+import com.docencia.clase10.DTOs.RegistroForm;
+import com.docencia.clase10.models.Usuario;
+import com.docencia.clase10.repositories.UsuarioRepository;
 
 @Controller
 public class RegistroController {
@@ -401,7 +401,7 @@ public class RegistroController {
 *   `RegistroForm.java`:
 
 ```java
-package com.docencia.clase08.DTOs;
+package com.docencia.clase10.DTOs;
 
 public class RegistroForm {
     
@@ -458,10 +458,10 @@ public class RegistroForm {
 Aquí configuramos propiedades generales de la aplicación, incluyendo la conexión a la base de datos. 🧰
 
 ```properties
-spring.application.name=clase08
+spring.application.name=clase10
 my.name=sebastian
 my.lastname=gomez
-spring.datasource.url=jdbc:mysql://localhost:3306/clase08
+spring.datasource.url=jdbc:mysql://localhost:3306/clase10
 spring.datasource.username=root
 spring.datasource.password=root
 spring.jpa.hibernate.ddl-auto=update

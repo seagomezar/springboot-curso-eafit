@@ -77,7 +77,7 @@ Entities are mapped to database tables using standard JPA annotations. For examp
 
 ```java
 // Product.java
-package com.docencia.clase08.models;
+package com.docencia.clase10.models;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class Product {
 
 ```java
 // Comment.java
-package com.docencia.clase08.models;
+package com.docencia.clase10.models;
 
 import jakarta.persistence.*;
 
@@ -130,9 +130,9 @@ Repositories are defined by extending Spring Data JPA’s `JpaRepository`:
 
 ```java
 // ProductRepository.java
-package com.docencia.clase08.repositories;
+package com.docencia.clase10.repositories;
 
-import com.docencia.clase08.models.Product;
+import com.docencia.clase10.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -143,9 +143,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 ```java
 // CommentRepository.java
-package com.docencia.clase08.repositories;
+package com.docencia.clase10.repositories;
 
-import com.docencia.clase08.models.Comment;
+import com.docencia.clase10.models.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -190,12 +190,12 @@ When the application starts, Flyway will automatically run pending migrations.
 A class implementing `CommandLineRunner` is used to seed the database at startup. For example, a `DataLoader` that creates products and comments:
 
 ```java
-package com.docencia.clase08.bootstrap;
+package com.docencia.clase10.bootstrap;
 
-import com.docencia.clase08.models.Product;
-import com.docencia.clase08.models.Comment;
-import com.docencia.clase08.repositories.ProductRepository;
-import com.docencia.clase08.repositories.CommentRepository;
+import com.docencia.clase10.models.Product;
+import com.docencia.clase10.models.Comment;
+import com.docencia.clase10.repositories.ProductRepository;
+import com.docencia.clase10.repositories.CommentRepository;
 import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -249,9 +249,9 @@ A simple shopping cart application uses session attributes to track products add
 ### Controller
 
 ```java
-package com.docencia.clase08.controllers;
+package com.docencia.clase10.controllers;
 
-import com.docencia.clase08.models.Product;
+import com.docencia.clase10.models.Product;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -366,7 +366,7 @@ This module demonstrates the Dependency Inversion Principle (DIP) using an inter
 #### 1. ImageStorage Interface
 
 ```java
-package com.docencia.clase08.interfaces;
+package com.docencia.clase10.interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -378,9 +378,9 @@ public interface ImageStorage {
 #### 2. ImageLocalStorage Implementation
 
 ```java
-package com.docencia.clase08.util;
+package com.docencia.clase10.util;
 
-import com.docencia.clase08.interfaces.ImageStorage;
+import com.docencia.clase10.interfaces.ImageStorage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -413,10 +413,10 @@ public class ImageLocalStorage implements ImageStorage {
 #### 3. Service Provider (Configuration)
 
 ```java
-package com.docencia.clase08.config;
+package com.docencia.clase10.config;
 
-import com.docencia.clase08.interfaces.ImageStorage;
-import com.docencia.clase08.util.ImageLocalStorage;
+import com.docencia.clase10.interfaces.ImageStorage;
+import com.docencia.clase10.util.ImageLocalStorage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -434,9 +434,9 @@ public class ImageServiceProvider {
 - **With Dependency Injection:**
 
 ```java
-package com.docencia.clase08.controllers;
+package com.docencia.clase10.controllers;
 
-import com.docencia.clase08.interfaces.ImageStorage;
+import com.docencia.clase10.interfaces.ImageStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -476,9 +476,9 @@ public class ImageController {
 - **Without Dependency Injection:**
 
 ```java
-package com.docencia.clase08.controllers;
+package com.docencia.clase10.controllers;
 
-import com.docencia.clase08.util.ImageLocalStorage;
+import com.docencia.clase10.util.ImageLocalStorage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -569,7 +569,7 @@ public class ImageNotDIController {
 To serve the uploaded images, add a resource handler:
 
 ```java
-package com.docencia.clase08.config;
+package com.docencia.clase10.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
