@@ -1,7 +1,3 @@
-Below is an example of a comprehensive README.md that summarizes all the topics covered—from setting up models and repositories with Hibernate/JPA, using Flyway for migrations, generating dummy data with Faker, and demonstrating dependency inversion with a cart system and an image storage example.
-
----
-
 # Spring Boot Project Overview
 
 This repository demonstrates several core concepts and techniques in Spring Boot development. The project includes:
