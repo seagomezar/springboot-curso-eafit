@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .maxSessionsPreventsLogin(true)
             )
             // Habilitar protección CSRF
-            .csrf().disable(); // Nota: en producción, mantener CSRF habilitado y configurar adecuadamente.
+            .csrf((csrf) -> csrf.disable()); // Nota: en producción, mantener CSRF habilitado y configurar adecuadamente.
         
         return http.build();
     }
