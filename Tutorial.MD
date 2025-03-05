@@ -524,8 +524,3 @@ server.servlet.session.timeout=30m
 *   **Añade validaciones más robustas 🧐:**  Implementa validaciones más completas en el registro de usuarios, tanto en el cliente como en el servidor. ✅
 *   **Implementa pruebas unitarias y de integración 🧪:**  Asegúrate de que tu sistema de seguridad funciona correctamente con pruebas automatizadas. 🤖
 *   **¡Construye tus propios proyectos! 🏗️:**  Utiliza este tutorial como base para crear tus propias aplicaciones web seguras. ¡El límite es tu imaginación! 🚀
-
-¡Espero que este tutorial te haya sido de gran ayuda!  Si tienes alguna pregunta, no dudes en consultar la documentación oficial de Spring Security y ¡a seguir aprendiendo! 💪 😊
-```
-
-¡Ahora, voy a crear el archivo `tutorial.md` con este contenido!
