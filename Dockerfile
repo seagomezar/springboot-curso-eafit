@@ -1,14 +1,22 @@
 # Usa una imagen base con OpenJDK 17
 FROM openjdk:17-jdk-slim
-
-# Define la carpeta de trabajo dentro del contenedor
 WORKDIR /app
+COPY pom.xml .
+COPY src src
 
-# Copia el archivo jar generado por Maven (o Gradle) al contenedor
-COPY target/*.jar app.jar
+# Copy Maven wrapper
+COPY mvnw .
+COPY .mvn .mvn
 
-# Expone el puerto por defecto de Spring Boot (8080)
+# Set execution permission for the Maven wrapper
+RUN chmod +x ./mvnw
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Create the final Docker image using OpenJDK 19
+FROM openjdk:19-jdk
+VOLUME /tmp
+
+# Copy the JAR from the build stage
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8080
-
-# Ejecuta la aplicación Spring Boot con variables de entorno
-ENTRYPOINT ["java", "-jar", "app.jar"]
