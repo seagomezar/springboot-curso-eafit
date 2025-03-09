@@ -1,5 +1,5 @@
-# Etapa de compilación con Maven
-FROM openjdk:17-jdk-slim AS build
+# Etapa de compilación (con Maven incluido)
+FROM maven:3.9-amazoncorretto-17 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
