@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 // Rutas públicas
-                .requestMatchers("/login", "/registro", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/h2-console/**").permitAll()
                 // Rutas protegidas (solo accesibles para usuarios autenticados)
                 .requestMatchers("/products/**").authenticated()
                 // Rutas específicas según roles
@@ -52,7 +52,9 @@ public class SecurityConfig {
                 .maxSessionsPreventsLogin(true)
             )
             // Habilitar protección CSRF
-            .csrf((csrf) -> csrf.disable()); // Nota: en producción, mantener CSRF habilitado y configurar adecuadamente.
+            .csrf((csrf) -> csrf.disable()) // Nota: en producción, mantener CSRF habilitado y configurar adecuadamente.
+            // Permitir frames (necesario para la consola H2)
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         
         return http.build();
     }

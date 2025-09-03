@@ -10,23 +10,24 @@ Vamos a analizar cada archivo clave del proyecto y entender su rol en el proceso
 Este archivo define las dependencias necesarias para nuestro proyecto Spring Boot.  Veamos las dependencias importantes para la seguridad:
 
 ```xml
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- Usaremos H2 en modo archivo para desarrollo -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 ```
 *   `spring-boot-starter-security`:  ¡La estrella del show! ✨ Esta dependencia habilita Spring Security y nos proporciona todas las herramientas para asegurar nuestra aplicación.
 *   `spring-boot-starter-data-jpa`:  Para la persistencia de datos.  Usaremos JPA para guardar la información de nuestros usuarios en la base de datos. 💾
-*   `mysql-connector-j`:  El conector para nuestra base de datos MySQL. 🗄️
+*   `h2`:  Base de datos embebida (modo archivo) para desarrollo. 🗄️
 
 ### 2. `src/main/java/com/docencia/clase10/clase10Application.java`:  Clase Principal de la Aplicación 🚦
 Este es el punto de entrada de nuestra aplicación Spring Boot.  Aquí no tenemos configuraciones específicas de seguridad, pero es importante notar la anotación `@SpringBootApplication`:
@@ -461,34 +462,46 @@ Aquí configuramos propiedades generales de la aplicación, incluyendo la conexi
 spring.application.name=clase10
 my.name=sebastian
 my.lastname=gomez
-spring.datasource.url=jdbc:mysql://localhost:3306/clase10
-spring.datasource.username=root
-spring.datasource.password=root
+
+# H2 en modo archivo (la BD queda en ./uploads/h2db)
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:file:./uploads/h2db/clase10;MODE=PostgreSQL
+spring.datasource.username=sa
+spring.datasource.password=
+
+# JPA/Hibernate
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto=update
-
-# Formatea la salida de las consultas para una mejor legibilidad
 spring.jpa.properties.hibernate.format_sql=true
-
-# Establece el nivel de log para las consultas SQL generadas por Hibernate
 logging.level.org.hibernate.SQL=DEBUG
-
-# Permite ver los valores de los parámetros vinculados en las consultas
 logging.level.org.hibernate.type.descriptor.sql=TRACE
-# Configura el log para ver los parámetros vinculados
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 logging.level.org.hibernate.type=TRACE
+
+# Flyway
 spring.flyway.locations=classpath:db/migration
 spring.flyway.enabled=true
 spring.flyway.baseline-on-migrate=true
+
+# Subidas de archivos
 spring.servlet.multipart.max-file-size=10MB
 spring.servlet.multipart.max-request-size=10MB
 
-# Configuración de Thymeleaf
+# Thymeleaf
 spring.thymeleaf.cache=false
 
-# Configuración de seguridad (puede incluir parámetros adicionales para la gestión de sesiones)
+# Seguridad / sesión
 server.servlet.session.timeout=30m
+
+# Consola H2
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
 ```
+
+> Nota: Puedes acceder a la consola H2 en http://localhost:8080/h2-console con:
+> - JDBC URL: `jdbc:h2:file:./uploads/h2db/clase10`
+> - Usuario: `sa`
+> - Password: vacío
 *   `spring.datasource.url`, `spring.datasource.username`, `spring.datasource.password`:  Configuración de la conexión a la base de datos MySQL. 🗄️
 *   `spring.jpa.hibernate.ddl-auto=update`:  Configura Hibernate para actualizar el esquema de la base de datos automáticamente.  **¡Cuidado en producción!** ⚠️
 *   `spring.flyway.locations`, `spring.flyway.enabled`, `spring.flyway.baseline-on-migrate`:  Configuración de Flyway para migraciones de base de datos. ✈️
