@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.docencia</groupId>
     <artifactId>clase10</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>clase10</name>
-    <description>Codigo de Ejemplo de la clase # sobre modelos y repositorios en springboot</description>
+    <description>Proyecto educativo de Spring Boot para el curso EAFIT. Cubre JPA/Hibernate, Spring Security, Flyway, Thymeleaf y más.</description>
     <url/>
     <licenses>
         <license/>
@@ -70,11 +70,20 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Faker para datos de ejemplo -->
+        <!-- DataFaker para generación de datos de ejemplo (reemplazo moderno de JavaFaker) -->
         <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.2</version>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.4.3</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

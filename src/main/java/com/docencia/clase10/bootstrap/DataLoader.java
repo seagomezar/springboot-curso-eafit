@@ -4,7 +4,7 @@ import com.docencia.clase10.models.Product;
 import com.docencia.clase10.models.Comment;
 import com.docencia.clase10.repositories.ProductRepository;
 import com.docencia.clase10.repositories.CommentRepository;
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,12 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Solo insertar datos si la base de datos está vacía para evitar duplicados
+        if (productRepository.count() > 0) {
+            System.out.println("La base de datos ya tiene datos. Omitiendo la carga inicial.");
+            return;
+        }
+
         Faker faker = new Faker(new Locale("es"));
         Random random = new Random();
 
@@ -41,11 +47,9 @@ public class DataLoader implements CommandLineRunner {
                 Comment comment = new Comment(description, product);
                 // Agregar el comentario a la lista del producto
                 product.getComments().add(comment);
-                // Opcional: si no tienes configurado el cascade en Product, también podrías guardar el comentario
-                // commentRepository.save(comment);
             }
 
-            // Guardar el producto (y sus comentarios, si se usa cascade)
+            // Guardar el producto (y sus comentarios via cascade)
             productRepository.save(product);
         }
 

@@ -1,91 +1,155 @@
-# Spring Boot Project Overview
+# Spring Boot — Proyecto Educativo EAFIT
 
-This repository demonstrates several core concepts and techniques in Spring Boot development. The project includes:
+![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-brightgreen?logo=springboot)
+![Maven](https://img.shields.io/badge/Maven-3.6%2B-blue?logo=apachemaven)
+![H2](https://img.shields.io/badge/Database-H2-lightblue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-- **JPA & Hibernate:** Creating models/entities and repositories to interact with a database.
-- **Flyway Migrations:** Managing and versioning database schema changes.
-- **Java Faker:** Seeding the database with dummy data.
-- **Cart System Example:** A simple shopping cart application that uses session data.
-- **Dependency Inversion & Dependency Injection (DIP):** An image storage example comparing DI versus manual instantiation.
-
----
-
-## Table of Contents
-
-- [Project Setup](#project-setup)
-- [JPA & Hibernate Models and Repositories](#jpa--hibernate-models-and-repositories)
-- [Flyway Migrations](#flyway-migrations)
-- [Generating Dummy Data with Java Faker](#generating-dummy-data-with-java-faker)
-- [Cart System Example](#cart-system-example)
-- [Dependency Inversion & Image Storage Example](#dependency-inversion--image-storage-example)
-- [Running the Application](#running-the-application)
-- [Common Issues & Troubleshooting](#common-issues--troubleshooting)
+Repositorio de referencia para el curso de **Spring Boot** de la Universidad EAFIT. Cubre los conceptos fundamentales del desarrollo de aplicaciones web empresariales con Spring Boot, incluyendo persistencia de datos, seguridad, migraciones de base de datos y principios de diseño.
 
 ---
 
-## Project Setup
+## 📚 Objetivos de Aprendizaje
 
-This Spring Boot project is built using Maven and includes the following dependencies:
-- **Spring Web:** To create REST controllers and serve web pages.
-- **Spring Data JPA:** For ORM using Hibernate (JPA implementation).
- - **Embedded Database (H2):** Simple, fast, file-based DB for development/testing.
-- **Flyway:** For database migrations.
-- **Java Faker:** For generating dummy data during development.
+Al completar este curso, los estudiantes serán capaces de:
 
-Ensure your `pom.xml` includes the relevant dependencies, for example with H2:
+1. Configurar un proyecto Spring Boot desde cero con Maven.
+2. Modelar entidades de dominio con JPA/Hibernate y gestionarlas con Spring Data.
+3. Aplicar migraciones de esquema de base de datos con Flyway.
+4. Implementar autenticación y autorización con Spring Security.
+5. Construir interfaces de usuario con Thymeleaf y plantillas reutilizables (fragments).
+6. Aplicar el principio de Inversión de Dependencias (DIP) y la Inyección de Dependencias (DI).
+7. Gestionar estado de sesión del usuario (ej.: carrito de compras).
+8. Cargar datos de prueba con DataFaker.
+9. Subir y servir archivos estáticos (imágenes).
 
-```xml
-<!-- Spring Boot Starter Web and Data JPA -->
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
+---
 
-<!-- H2 Database (file mode) -->
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>runtime</scope>
-    <!-- version managed by Spring Boot BOM -->
-</dependency>
+## 🛠️ Prerrequisitos
 
-<!-- Flyway -->
-<dependency>
-  <groupId>org.flywaydb</groupId>
-  <artifactId>flyway-core</artifactId>
-  <version>10.20.1</version>
-</dependency>
+| Herramienta | Versión mínima | Descripción |
+|-------------|---------------|-------------|
+| **Java (JDK)** | 17 | Lenguaje de programación principal |
+| **Maven** | 3.6 | Gestión de dependencias y construcción (incluido como `mvnw`) |
+| **IDE** | — | IntelliJ IDEA, VS Code + Extension Pack for Java, o Eclipse |
+| **Git** | — | Control de versiones |
 
-<!-- Java Faker -->
-<dependency>
-  <groupId>com.github.javafaker</groupId>
-  <artifactId>javafaker</artifactId>
-  <version>1.0.2</version>
-</dependency>
+> **Nota:** No necesitas instalar Maven por separado. El proyecto incluye el Maven Wrapper (`mvnw` / `mvnw.cmd`) que descarga automáticamente la versión correcta.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+springboot-curso-eafit/
+├── src/
+│   ├── main/
+│   │   ├── java/com/docencia/clase10/
+│   │   │   ├── bootstrap/          # Carga inicial de datos (DataLoader)
+│   │   │   ├── config/             # Configuración de seguridad y recursos estáticos
+│   │   │   ├── controllers/        # Controladores MVC
+│   │   │   ├── DTOs/               # Objetos de Transferencia de Datos (formularios)
+│   │   │   ├── interfaces/         # Interfaces para abstracción (DIP)
+│   │   │   ├── models/             # Entidades JPA (Alumno, Curso, Product, Comment, Usuario)
+│   │   │   ├── repositories/       # Repositorios Spring Data JPA
+│   │   │   ├── services/           # Servicios de negocio
+│   │   │   ├── util/               # Utilidades (ej.: ImageLocalStorage)
+│   │   │   └── clase10Application.java
+│   │   └── resources/
+│   │       ├── db/migration/       # Scripts SQL de Flyway (V1__, V2__, ...)
+│   │       ├── templates/          # Plantillas Thymeleaf
+│   │       └── application.properties
+│   └── test/                       # Pruebas unitarias e integración
+├── uploads/                        # Archivos subidos (imágenes, DB H2)
+├── pom.xml                         # Configuración Maven con dependencias
+└── mvnw / mvnw.cmd                 # Maven Wrapper
 ```
 
 ---
 
-## JPA & Hibernate Models and Repositories
+## ⚡ Inicio Rápido
 
-### Models
+### 1. Clonar el repositorio
 
-Entities are mapped to database tables using standard JPA annotations. For example, the `Product` and `Comment` entities:
+```bash
+git clone https://github.com/seagomezar/springboot-curso-eafit.git
+cd springboot-curso-eafit
+```
+
+### 2. Compilar y ejecutar
+
+**En Linux/macOS:**
+```bash
+./mvnw spring-boot:run
+```
+
+**En Windows:**
+```cmd
+mvnw.cmd spring-boot:run
+```
+
+### 3. Acceder a la aplicación
+
+| URL | Descripción |
+|-----|-------------|
+| `http://localhost:8080/registro` | Registrar un nuevo usuario |
+| `http://localhost:8080/login` | Iniciar sesión |
+| `http://localhost:8080/products` | Lista de productos (requiere autenticación) |
+| `http://localhost:8080/cart` | Carrito de compras |
+| `http://localhost:8080/image` | Subir imagen (con DI) |
+| `http://localhost:8080/image-not-di` | Subir imagen (sin DI) |
+| `http://localhost:8080/h2-console` | Consola H2 (base de datos) |
+
+> **Primer uso:** Registra un usuario en `/registro` y luego inicia sesión. Para acceder a `/alumnos/**` necesitas un usuario con rol `ROLE_ADMIN` (asignable directamente en la base de datos H2).
+
+---
+
+## 🗃️ Configuración de la Base de Datos (H2)
+
+El proyecto usa **H2** como base de datos embebida en modo archivo, lo que significa que los datos persisten entre reinicios en la carpeta `uploads/h2db/`.
+
+### application.properties
+
+```properties
+# Datasource
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:file:./uploads/h2db/clase10;MODE=PostgreSQL
+spring.datasource.username=sa
+spring.datasource.password=
+
+# Hibernate
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+
+# Consola H2 (solo para desarrollo)
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+```
+
+### Acceso a la Consola H2
+
+1. Navega a `http://localhost:8080/h2-console`
+2. Usa la URL JDBC: `jdbc:h2:file:./uploads/h2db/clase10`
+3. Usuario: `sa`, Contraseña: (vacía)
+
+---
+
+## 🗄️ JPA & Hibernate — Modelos y Repositorios
+
+JPA (Java Persistence API) es el estándar de Java para el mapeo objeto-relacional (ORM). **Hibernate** es la implementación más popular de JPA que Spring Boot usa por defecto.
+
+### ¿Cómo funciona?
+
+1. Defines una clase Java con la anotación `@Entity`.
+2. Hibernate crea automáticamente la tabla en la base de datos.
+3. Usas un `JpaRepository` para operaciones CRUD sin escribir SQL.
+
+### Entidades del Proyecto
+
+#### Product (con relación OneToMany a Comment)
 
 ```java
-// Product.java
-package com.docencia.clase10.models;
-
-import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 @Entity
 @Table(name = "products")
 public class Product {
@@ -99,16 +163,13 @@ public class Product {
     @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments = new ArrayList<>();
 
-    // Constructors, getters and setters...
+    // Constructores, getters y setters...
 }
 ```
 
+#### Comment (con relación ManyToOne a Product)
+
 ```java
-// Comment.java
-package com.docencia.clase10.models;
-
-import jakarta.persistence.*;
-
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -118,63 +179,69 @@ public class Comment {
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    // Constructors, getters and setters...
+    // Constructores, getters y setters...
 }
 ```
 
-### Repositories
+### Tipos de Relaciones JPA
 
-Repositories are defined by extending Spring Data JPA’s `JpaRepository`:
+| Anotación | Descripción | Ejemplo |
+|-----------|-------------|---------|
+| `@OneToMany` | Un registro tiene muchos relacionados | Un `Product` tiene muchos `Comment` |
+| `@ManyToOne` | Muchos registros pertenecen a uno | Un `Comment` pertenece a un `Product` |
+| `@OneToOne` | Relación uno a uno | Un `Usuario` tiene un `Perfil` |
+| `@ManyToMany` | Muchos a muchos | Un `Alumno` toma muchos `Curso` |
+
+### Repositorios
+
+Spring Data JPA proporciona operaciones CRUD automáticas al extender `JpaRepository`:
 
 ```java
-// ProductRepository.java
-package com.docencia.clase10.repositories;
-
-import com.docencia.clase10.models.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-}
-```
-
-```java
-// CommentRepository.java
-package com.docencia.clase10.repositories;
-
-import com.docencia.clase10.models.Comment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+    // Spring genera automáticamente: findAll(), findById(), save(), delete(), count(), ...
+    // También puedes declarar métodos personalizados:
+    List<Product> findByName(String name);
+    List<Product> findByPriceGreaterThan(int price);
 }
 ```
 
 ---
 
-## Flyway Migrations
+## 🔄 Flyway — Migraciones de Base de Datos
 
-Flyway is used for managing database schema changes via versioned SQL scripts.
+Flyway gestiona el versionado del esquema de la base de datos con archivos SQL numerados. Cada vez que arranca la aplicación, Flyway verifica qué migraciones pendientes hay y las ejecuta en orden.
 
-1. **Migration Scripts Location:**  
-   Place your migration files in `src/main/resources/db/migration`.
+### Convención de Nombres
 
-2. **Example Migration Script:**
+```
+V{versión}__{descripción}.sql
+```
+
+- `V1__Create_person_table.sql` — Primera migración
+- `V2__Add_email_to_users.sql` — Segunda migración
+
+### Ubicación de Migraciones
+
+```
+src/main/resources/db/migration/
+└── V1__Create_person_table.sql
+```
+
+### Ejemplo de Migración
 
 ```sql
--- V1__create_person_table.sql (H2)
-CREATE TABLE PERSON (
-    ID INT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
+-- V1__Create_person_table.sql
+CREATE TABLE IF NOT EXISTS PERSON (
+    ID   INT PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,
     NAME VARCHAR(100) NOT NULL
 );
 ```
 
-3. **Configuration in application.properties:**
+### Configuración
 
 ```properties
 spring.flyway.enabled=true
@@ -182,27 +249,17 @@ spring.flyway.locations=classpath:db/migration
 spring.flyway.baseline-on-migrate=true
 ```
 
-When the application starts, Flyway will automatically run pending migrations.
+> **Importante:** Nunca modifiques una migración ya aplicada. Si necesitas cambiar el esquema, crea una nueva migración (`V2__...sql`).
 
 ---
 
-## Generating Dummy Data with Java Faker
+## 🎲 DataFaker — Generación de Datos de Prueba
 
-A class implementing `CommandLineRunner` is used to seed the database at startup. For example, a `DataLoader` that creates products and comments:
+El proyecto usa [DataFaker](https://www.datafaker.net/) (evolución moderna de JavaFaker) para generar datos de prueba realistas al arrancar la aplicación por primera vez.
+
+### DataLoader
 
 ```java
-package com.docencia.clase10.bootstrap;
-
-import com.docencia.clase10.models.Product;
-import com.docencia.clase10.models.Comment;
-import com.docencia.clase10.repositories.ProductRepository;
-import com.docencia.clase10.repositories.CommentRepository;
-import com.github.javafaker.Faker;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import java.util.Locale;
-import java.util.Random;
-
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -216,10 +273,14 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Solo carga datos si la base de datos está vacía
+        if (productRepository.count() > 0) {
+            return;
+        }
+
         Faker faker = new Faker(new Locale("es"));
         Random random = new Random();
 
-        // Insert 5 products with 1-3 comments each
         for (int i = 0; i < 5; i++) {
             String productName = faker.commerce().productName();
             int price = random.nextInt(500) + 50;
@@ -233,70 +294,101 @@ public class DataLoader implements CommandLineRunner {
             }
             productRepository.save(product);
         }
-
-        System.out.println("Products and comments generated.");
     }
 }
 ```
 
+**Conceptos clave:**
+- `CommandLineRunner`: interfaz de Spring Boot que ejecuta código al arrancar la aplicación.
+- La verificación `productRepository.count() > 0` evita insertar datos duplicados en reinicios.
+- `CascadeType.ALL` en la entidad `Product` permite guardar los comentarios al guardar el producto.
+
 ---
 
-## Cart System Example
+## 🔒 Spring Security — Autenticación y Autorización
 
-### Overview
+Spring Security protege las rutas de la aplicación y gestiona el ciclo de vida de la sesión de usuario.
 
-A simple shopping cart application uses session attributes to track products added to the cart. The product “database” is simulated with a hard-coded map.
+### Flujo de Autenticación
+
+```
+1. Usuario visita una ruta protegida
+2. Spring Security redirige a /login
+3. Usuario ingresa credenciales
+4. Spring verifica contra la base de datos (UserDetailsService)
+5. Si es correcto → redirige a /products
+6. Si falla → muestra error en /login
+```
+
+### Roles de Usuario
+
+| Rol | Acceso |
+|-----|--------|
+| `ROLE_USER` | `/products/**`, `/cursos/**`, `/cart`, `/image/**` |
+| `ROLE_ADMIN` | Todo lo anterior + `/alumnos/**` |
+
+### SecurityConfig
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/login", "/registro", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/alumnos/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/products", true)
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+            );
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+```
+
+### Registro de Usuarios
+
+El endpoint `/registro` permite crear nuevas cuentas. Las contraseñas se almacenan usando **BCrypt** (hash seguro):
+
+```java
+usuario.setPassword(passwordEncoder.encode(registroForm.getPassword()));
+```
+
+---
+
+## 🛒 Carrito de Compras — Gestión de Sesión
+
+Ejemplo de cómo usar `HttpSession` de Jakarta EE para mantener estado entre peticiones HTTP.
+
+### ¿Por qué usar sesión?
+
+HTTP es un protocolo sin estado (stateless). La sesión permite recordar información del usuario entre peticiones, como los productos que ha agregado al carrito.
 
 ### Controller
 
 ```java
-package com.docencia.clase10.controllers;
-
-import com.docencia.clase10.models.Product;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.HashMap;
-import java.util.Map;
-
 @Controller
 @RequestMapping("/cart")
 public class CartController {
 
-    // Simulated database of products
-    private final Map<Integer, Product> products = new HashMap<>();
-
-    public CartController() {
-        products.put(121, new Product(121, "TV Samsung", 1000));
-        products.put(11, new Product(11, "iPhone", 2000));
-    }
-
-    @GetMapping
-    public String index(HttpSession session, Model model) {
-        Map<Integer, Integer> cartProductData = (Map<Integer, Integer>) session.getAttribute("cart_product_data");
-        Map<Integer, Product> cartProducts = new HashMap<>();
-
-        if (cartProductData != null) {
-            for (Integer id : cartProductData.keySet()) {
-                if (products.containsKey(id)) {
-                    cartProducts.put(id, products.get(id));
-                }
-            }
-        }
-
-        model.addAttribute("title", "Cart - Online Store");
-        model.addAttribute("subtitle", "Shopping Cart");
-        model.addAttribute("products", products);
-        model.addAttribute("cartProducts", cartProducts);
-        return "cart/index";
-    }
-
     @GetMapping("/add/{id}")
     public String add(@PathVariable Integer id, HttpSession session) {
-        Map<Integer, Integer> cartProductData = (Map<Integer, Integer>) session.getAttribute("cart_product_data");
+        Map<Integer, Integer> cartProductData =
+            (Map<Integer, Integer>) session.getAttribute("cart_product_data");
         if (cartProductData == null) {
             cartProductData = new HashMap<>();
         }
@@ -313,82 +405,64 @@ public class CartController {
 }
 ```
 
-### Thymeleaf View
-
-Create `src/main/resources/templates/cart/index.html`:
+### Vista Thymeleaf (cart/index.html)
 
 ```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title th:text="${title}">Cart - Online Store</title>
-</head>
-<body>
-  <h1 th:text="${subtitle}">Shopping Cart</h1>
+<h2>Productos disponibles</h2>
+<ul>
+  <li th:each="entry : ${products}">
+    <span th:text="${entry.value.name}">Producto</span> -
+    <span th:text="${entry.value.price}">0</span>
+    <a th:href="@{'/cart/add/' + ${entry.key}}">Agregar al carrito</a>
+  </li>
+</ul>
 
-  <h2>Available Products</h2>
-  <ul>
-    <li th:each="entry : ${products}">
-      <span>Id: <span th:text="${entry.key}"></span> - </span>
-      <span>Name: <span th:text="${entry.value.name}"></span> - </span>
-      <span>Price: <span th:text="${entry.value.price}"></span> - </span>
-      <a th:href="@{'/cart/add/' + ${entry.key}}">Add to cart</a>
-    </li>
-  </ul>
-
-  <h2>Products in Cart</h2>
-  <ul>
-    <li th:each="entry : ${cartProducts}">
-      <span>Id: <span th:text="${entry.key}"></span> - </span>
-      <span>Name: <span th:text="${entry.value.name}"></span> - </span>
-      <span>Price: <span th:text="${entry.value.price}"></span></span>
-    </li>
-  </ul>
-  <a th:href="@{/cart/removeAll}">Remove all products from cart</a>
-</body>
-</html>
+<h2>Mi Carrito</h2>
+<ul>
+  <li th:each="entry : ${cartProducts}">
+    <span th:text="${entry.value.name}">Producto</span>
+  </li>
+</ul>
+<a th:href="@{/cart/removeAll}">Vaciar carrito</a>
 ```
-
-> **Note:** If you encounter issues iterating over a map, iterate directly (as shown above) instead of using `#maps.entries(...)`.
 
 ---
 
-## Dependency Inversion & Image Storage Example
+## 🖼️ Almacenamiento de Imágenes — Inversión de Dependencias (DIP)
 
-### Overview
+Este módulo ilustra el **Principio de Inversión de Dependencias** (uno de los principios SOLID):
+- Las clases de alto nivel no deben depender de clases de bajo nivel.
+- Ambas deben depender de **abstracciones** (interfaces).
 
-This module demonstrates the Dependency Inversion Principle (DIP) using an interface for image storage and two implementations:
-- **With DI:** The implementation is injected via Spring's container.
-- **Without DI:** The implementation is directly instantiated in the controller.
+### Diagrama de Dependencias
 
-### Components
+```
+                  ┌─────────────────────┐
+                  │   ImageController   │  (alto nivel)
+                  └──────────┬──────────┘
+                             │ depende de
+                             ▼
+                  ┌─────────────────────┐
+                  │   ImageStorage      │  (abstracción / interfaz)
+                  └──────────┬──────────┘
+                             │ implementada por
+                             ▼
+                  ┌─────────────────────┐
+                  │ ImageLocalStorage   │  (bajo nivel)
+                  └─────────────────────┘
+```
 
-#### 1. ImageStorage Interface
+### Interface
 
 ```java
-package com.docencia.clase10.interfaces;
-
-import org.springframework.web.multipart.MultipartFile;
-
 public interface ImageStorage {
     void store(MultipartFile file);
 }
 ```
 
-#### 2. ImageLocalStorage Implementation
+### Implementación
 
 ```java
-package com.docencia.clase10.util;
-
-import com.docencia.clase10.interfaces.ImageStorage;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @Component
 public class ImageLocalStorage implements ImageStorage {
     private static final String STORAGE_DIR = "uploads/";
@@ -398,11 +472,9 @@ public class ImageLocalStorage implements ImageStorage {
         if (file != null && !file.isEmpty()) {
             try {
                 Path storageDir = Paths.get(STORAGE_DIR);
-                if (!Files.exists(storageDir)) {
-                    Files.createDirectories(storageDir);
-                }
-                Path destinationFile = storageDir.resolve("test.png").normalize().toAbsolutePath();
-                Files.copy(file.getInputStream(), destinationFile);
+                Files.createDirectories(storageDir);
+                Path destination = storageDir.resolve("test.png").normalize().toAbsolutePath();
+                Files.copy(file.getInputStream(), destination);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -411,252 +483,169 @@ public class ImageLocalStorage implements ImageStorage {
 }
 ```
 
-#### 3. Service Provider (Configuration)
+### Con DI (recomendado)
 
 ```java
-package com.docencia.clase10.config;
-
-import com.docencia.clase10.interfaces.ImageStorage;
-import com.docencia.clase10.util.ImageLocalStorage;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class ImageServiceProvider {
-    @Bean
-    public ImageStorage imageStorage() {
-        return new ImageLocalStorage();
-    }
-}
-```
-
-#### 4. Controllers
-
-- **With Dependency Injection:**
-
-```java
-package com.docencia.clase10.controllers;
-
-import com.docencia.clase10.interfaces.ImageStorage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 @Controller
 @RequestMapping("/image")
 public class ImageController {
 
-    private final ImageStorage imageStorage;
+    private final ImageStorage imageStorage; // Depende de la interfaz, no de la implementación
 
     @Autowired
     public ImageController(ImageStorage imageStorage) {
         this.imageStorage = imageStorage;
     }
 
-    @GetMapping
-    public String index(Model model) {
-        return "image/index";
-    }
-
     @PostMapping("/save")
-    public String save(@RequestParam("profile_image") MultipartFile profileImage,
-                       RedirectAttributes redirectAttributes) {
+    public String save(@RequestParam("profile_image") MultipartFile profileImage) {
         imageStorage.store(profileImage);
-        redirectAttributes.addFlashAttribute("message", "Image uploaded successfully!");
         return "redirect:/image";
     }
 }
 ```
 
-- **Without Dependency Injection:**
+### Sin DI (no recomendado — acoplamiento fuerte)
 
 ```java
-package com.docencia.clase10.controllers;
-
-import com.docencia.clase10.util.ImageLocalStorage;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-@Controller
-@RequestMapping("/image-not-di")
-public class ImageNotDIController {
-
-    @GetMapping
-    public String index(Model model) {
-        return "imagenotdi/index";
-    }
-
-    @PostMapping("/save")
-    public String save(@RequestParam("profile_image") MultipartFile profileImage,
-                       RedirectAttributes redirectAttributes) {
-        ImageLocalStorage storage = new ImageLocalStorage();
-        storage.store(profileImage);
-        redirectAttributes.addFlashAttribute("message", "Image uploaded successfully (not DI)!");
-        return "redirect:/image-not-di";
-    }
+@PostMapping("/save")
+public String save(@RequestParam("profile_image") MultipartFile profileImage) {
+    ImageLocalStorage storage = new ImageLocalStorage(); // Acoplado a la implementación concreta
+    storage.store(profileImage);
+    return "redirect:/image";
 }
 ```
 
-#### 5. Thymeleaf Views
+> **¿Por qué es mejor con DI?** Si mañana quieres guardar imágenes en AWS S3 o Google Cloud Storage, solo cambias la implementación sin tocar `ImageController`. Con DI, el controlador está desacoplado del mecanismo de almacenamiento.
 
-- **For DI (in `src/main/resources/templates/image/index.html`):**
+---
+
+## 🌿 Thymeleaf — Motor de Plantillas
+
+Thymeleaf es el motor de plantillas HTML que Spring Boot usa por defecto. Permite renderizar páginas HTML dinámicas en el servidor.
+
+### Características Clave
+
+- **Fragmentos reutilizables:** `fragments/header.html`, `fragments/footer.html`
+- **Iteración:** `th:each` para recorrer listas y mapas
+- **Condiciones:** `th:if` y `th:unless`
+- **Enlace de formularios:** `th:object` y `th:field`
+- **URLs dinámicas:** `th:href="@{/ruta}"`
+
+### Ejemplo de Fragmento (header.html)
 
 ```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Image Storage - DI</title>
-</head>
-<body>
-<div class="container">
-    <h1>Upload Image</h1>
-    <form th:action="@{/image/save}" method="post" enctype="multipart/form-data">
-        <input type="file" name="profile_image"/>
-        <button type="submit">Submit</button>
-    </form>
-    <div th:if="${message}">
-        <p th:text="${message}"></p>
-    </div>
-    <div>
-        <img th:src="@{'/uploads/test.png'}" alt="Uploaded Image"/>
-    </div>
-</div>
-</body>
-</html>
+<!-- templates/fragments/header.html -->
+<nav th:fragment="header">
+  <a href="/products">Productos</a>
+  <a href="/cart">Carrito</a>
+  <a href="/logout">Cerrar sesión</a>
+</nav>
 ```
 
-- **For Non-DI (in `src/main/resources/templates/imagenotdi/index.html`):**
-
+**Uso en otra plantilla:**
 ```html
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Image Storage - Without DI</title>
-</head>
-<body>
-<div class="container">
-    <h1>Upload Image (Without Dependency Injection)</h1>
-    <form th:action="@{/image-not-di/save}" method="post" enctype="multipart/form-data">
-        <input type="file" name="profile_image"/>
-        <button type="submit">Submit</button>
-    </form>
-    <div th:if="${message}">
-        <p th:text="${message}"></p>
-    </div>
-    <div>
-        <img th:src="@{'/uploads/test.png'}" alt="Uploaded Image"/>
-    </div>
-</div>
-</body>
-</html>
-```
-
-#### 6. Static Resource Configuration
-
-To serve the uploaded images, add a resource handler:
-
-```java
-package com.docencia.clase10.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
-public class StaticResourceConfiguration implements WebMvcConfigurer {
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
-    }
-}
+<div th:replace="~{fragments/header :: header}"></div>
 ```
 
 ---
 
-## Running the Application
+## 📦 Dependencias Principales
 
-1. **Build and Run:**
+```xml
+<!-- Spring Boot Parent (gestiona versiones de todas las dependencias) -->
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.3</version>
+</parent>
 
-   Use Maven:
-   ```bash
-   mvn spring-boot:run
-   ```
-   Or build an executable JAR:
-   ```bash
-   mvn clean package
-   java -jar target/your-application-name.jar
-   ```
+<!-- Web MVC + Tomcat embebido -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
 
-2. **Test the Endpoints:**
-   - **Cart System:** Visit [http://localhost:8080/cart](http://localhost:8080/cart).
-   - **Image Storage with DI:** Visit [http://localhost:8080/image](http://localhost:8080/image).
-   - **Image Storage without DI:** Visit [http://localhost:8080/image-not-di](http://localhost:8080/image-not-di).
+<!-- JPA / Hibernate -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
 
-3. **H2 Console (optional):**
-    - URL: http://localhost:8080/h2-console
-    - JDBC URL: `jdbc:h2:file:./uploads/h2db/clase10`
-    - Username: `sa`
-    - Password: (empty)
+<!-- Spring Security -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
 
-4. **Database configuration (reference - see `application.properties`):**
-    ```properties
-    spring.datasource.driver-class-name=org.h2.Driver
-    spring.datasource.url=jdbc:h2:file:./uploads/h2db/clase10;MODE=PostgreSQL
-    spring.datasource.username=sa
-    spring.datasource.password=
-    spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-    spring.jpa.hibernate.ddl-auto=update
-    spring.h2.console.enabled=true
-    spring.h2.console.path=/h2-console
-    spring.flyway.enabled=true
-    spring.flyway.locations=classpath:db/migration
-    ```
+<!-- Motor de plantillas Thymeleaf -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
 
----
+<!-- Base de datos H2 embebida (en memoria / archivo) -->
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
 
-## Common Issues & Troubleshooting
-
-- **HTTP 413 – Maximum Upload Size Exceeded:**  
-  Adjust file upload limits in `application.properties`:
-  ```properties
-  spring.servlet.multipart.max-file-size=10MB
-  spring.servlet.multipart.max-request-size=10MB
-  ```
-- **Image Not Displaying:**  
-  - Confirm the image is saved in the `uploads` folder.
-  - Verify the resource handler mapping and file permissions.
-  - Directly access the image via `http://localhost:8080/uploads/test.png`.
-- **Thymeleaf Map Iteration Errors:**  
-  Iterate directly over the map rather than using `#maps.entries(...)`.
+<!-- DataFaker: generación de datos de prueba -->
+<dependency>
+    <groupId>net.datafaker</groupId>
+    <artifactId>datafaker</artifactId>
+    <version>2.4.3</version>
+</dependency>
+```
 
 ---
 
-## Additional Notes
+## 🚀 Construir un JAR Ejecutable
 
-- **Hibernate & JPA:**  
-  Hibernate automatically maps your Java entities to database tables based on your model definitions.
-- **Flyway Migrations:**  
-  Use Flyway to version and manage database schema changes with SQL migration files.
-- **Java Faker:**  
-  Seed your database with dummy data using a `CommandLineRunner`.
-- **Dependency Injection:**  
-  Utilize Spring's DI to decouple your code and improve testability and flexibility.
-- **Cart System:**  
-  A simple example using session management to simulate a shopping cart.
+Para generar un JAR que puedas distribuir o desplegar:
+
+```bash
+./mvnw clean package
+java -jar target/clase10-0.0.1-SNAPSHOT.jar
+```
 
 ---
+
+## 🐛 Resolución de Problemas Comunes
+
+| Problema | Causa | Solución |
+|----------|-------|----------|
+| `HTTP 413 — Payload Too Large` | Archivo demasiado grande | Ajusta `spring.servlet.multipart.max-file-size=10MB` |
+| La imagen no aparece | Archivo no servido | Verifica `StaticResourceConfiguration` y que el archivo exista en `uploads/` |
+| Error al iniciar: `Flyway` | Script SQL inválido | Revisa la sintaxis SQL en `db/migration/` y que el nombre siga el patrón `V{n}__*.sql` |
+| `Access Denied` en H2 Console | CSRF o headers | Verifica que `csrf().disable()` y `frameOptions().sameOrigin()` estén configurados |
+| `UsernameNotFoundException` | Usuario no registrado | Regístrate primero en `/registro` |
+| Los datos se duplican al reiniciar | Falta chequeo de existencia | El `DataLoader` ya incluye `if (productRepository.count() > 0) return;` |
+
+---
+
+## 📖 Recursos Adicionales
+
+- [Documentación oficial de Spring Boot](https://docs.spring.io/spring-boot/index.html)
+- [Guía de Spring Security](https://docs.spring.io/spring-security/reference/index.html)
+- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/index.html)
+- [Thymeleaf Tutorial](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html)
+- [DataFaker](https://www.datafaker.net/documentation/getting-started/)
+- [Flyway Documentation](https://documentation.red-gate.com/flyway)
+
+---
+
+## 👩‍💻 Cómo Contribuir
+
+Este es un repositorio educativo. Si encuentras un error o tienes una mejora:
+
+1. Haz un fork del repositorio.
+2. Crea una rama: `git checkout -b mejora/descripcion`.
+3. Realiza tus cambios y haz commit: `git commit -m "Describe el cambio"`.
+4. Abre un Pull Request.
+
+---
+
+*Desarrollado para el curso de Spring Boot — Universidad EAFIT*
+
