@@ -3,7 +3,6 @@ package com.docencia.clase10.bootstrap;
 import com.docencia.clase10.models.Product;
 import com.docencia.clase10.models.Comment;
 import com.docencia.clase10.repositories.ProductRepository;
-import com.docencia.clase10.repositories.CommentRepository;
 import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,11 +14,9 @@ import java.util.Random;
 public class DataLoader implements CommandLineRunner {
 
     private final ProductRepository productRepository;
-    private final CommentRepository commentRepository;
 
-    public DataLoader(ProductRepository productRepository, CommentRepository commentRepository) {
+    public DataLoader(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.commentRepository = commentRepository;
     }
 
     @Override

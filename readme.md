@@ -338,18 +338,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/login", "/registro", "/css/**", "/js/**").permitAll()
+                // Rutas públicas
+                .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/h2-console/**").permitAll()
+                // Rutas protegidas (solo accesibles para usuarios autenticados)
+                .requestMatchers("/products/**").authenticated()
+                // Rutas específicas según roles
                 .requestMatchers("/alumnos/**").hasRole("ADMIN")
+                .requestMatchers("/cursos/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/products", true)
+                .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
-            );
+                .permitAll()
+            )
+            // ⚠️ SOLO PARA DESARROLLO: CSRF deshabilitado para simplificar el ejemplo.
+            // En producción, habilita CSRF y configura las excepciones necesarias.
+            .csrf(csrf -> csrf.disable())
+            // Necesario para la consola H2 (carga en un iframe)
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         return http.build();
     }
 
@@ -471,8 +483,12 @@ public class ImageLocalStorage implements ImageStorage {
     public void store(MultipartFile file) {
         if (file != null && !file.isEmpty()) {
             try {
+                // Crear el directorio si no existe
                 Path storageDir = Paths.get(STORAGE_DIR);
-                Files.createDirectories(storageDir);
+                if (!Files.exists(storageDir)) {
+                    Files.createDirectories(storageDir);
+                }
+                // Guardar la imagen con el nombre "test.png"
                 Path destination = storageDir.resolve("test.png").normalize().toAbsolutePath();
                 Files.copy(file.getInputStream(), destination);
             } catch (IOException e) {
@@ -498,8 +514,10 @@ public class ImageController {
     }
 
     @PostMapping("/save")
-    public String save(@RequestParam("profile_image") MultipartFile profileImage) {
+    public String save(@RequestParam("profile_image") MultipartFile profileImage,
+                       RedirectAttributes redirectAttributes) {
         imageStorage.store(profileImage);
+        redirectAttributes.addFlashAttribute("message", "Image uploaded successfully!");
         return "redirect:/image";
     }
 }
