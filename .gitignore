@@ -2,7 +2,10 @@ HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
-!**/src/test/**/target/
+!**/src/test/**/build/
+
+# H2 database files (generated at runtime)
+uploads/h2db/
 
 ### STS ###
 .apt_generated
